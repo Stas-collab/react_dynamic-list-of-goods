@@ -4,6 +4,7 @@ import { GoodsList } from './GoodsList';
 
 import { getAll, get5First, getRedGoods } from './api/goods';
 import { Good } from './types/Good';
+
 // or
 // import * as goodsAPI from './api/goods';
 
@@ -11,17 +12,30 @@ export const App: React.FC = () => {
   const [goods, setGoods] = useState<Good[]>([]);
 
   const handleLoadAll = () => {
-    getAll().then(data => setGoods(data));
+    getAll()
+      .then(data => setGoods(data))
+      .catch(error => {
+        throw new Error('Failed to load all goods:', error);
+      });
   };
 
   const handleLoad5 = async () => {
-    const data = await get5First();
+    try {
+      const data = await get5First();
 
-    setGoods(data);
+      setGoods(data);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Failed to load first 5 goods:', error);
+    }
   };
 
   const handleLoadRed = () => {
-    getRedGoods().then(setGoods);
+    getRedGoods()
+      .then(setGoods)
+      .catch(error => {
+        throw new Error('Failed to load red goods:', error);
+      });
   };
 
   return (
